@@ -110,7 +110,6 @@ class SongsGen:
                     rs['lyric'] = re.sub(r"\[.*?\]", "", mt.get('prompt'))
                 if not rs['song_name'] and d.get('title'):
                     rs['song_name'] = d.get('title')
-            print('rs:', rs)
             if all(rs.values()):
                 return rs
             else:
@@ -165,7 +164,7 @@ class SongsGen:
             return None, None
         # only download the first one
         url = f'https://audiopipe.suno.ai/?item_id={song_ids[0]}'
-        print('url:', url)
+        time.sleep(10) # wait for the song to be ready, maybe need more time
         response = rget(url, allow_redirects=False, stream=True)
         if response.status_code != 200:
             raise Exception("Could not download song")
@@ -178,8 +177,8 @@ class SongsGen:
                 if chunk:
                     output_file.write(chunk)
             print(f'downloaded {song_name} finished')
-        with open(lyric_file, "w", encoding="utf-8") as lyric_file:
-            lyric_file.write(f"{song_name}\n\n{lyric}")
+        with open(lyric_file, "w", encoding="utf-8") as lyric_out_file:
+            lyric_out_file.write(f"{song_name}\n\n{lyric}")
             print('lyric saved')
         return song_file, lyric_file
 
